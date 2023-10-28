@@ -2,16 +2,18 @@ use std::ops::Add;
 use std::ops::Mul;
 use vector::Vector;
 use bivector::Bivector;
+use trivector::Trivector;
 
 mod vector;
 mod bivector;
+mod trivector;
 
 fn main() {
     println!("Hello, world!");
 }
 
 impl Mul<Bivector> for Vector {
-    type Output = (Vector, f64);
+    type Output = (Vector, Trivector);
 
     fn mul(self, other: Bivector) -> Self::Output {
         (
@@ -20,13 +22,13 @@ impl Mul<Bivector> for Vector {
                 y: self.x * other.xy,
                 z: self.y * other.yz,
             },
-            self.x * other.yz + self.y * other.zx + self.z * other.xy,
+            Trivector(self.x * other.yz + self.y * other.zx + self.z * other.xy),
         )
     }
 }
 
 impl Mul<Vector> for Bivector {
-    type Output = (Vector, f64);
+    type Output = (Vector, Trivector);
 
     fn mul(self, other: Vector) -> Self::Output {
         (
@@ -35,7 +37,7 @@ impl Mul<Vector> for Bivector {
                 y: self.yz * other.z,
                 z: self.zx * other.x,
             },
-            self.xy * other.z + self.yz * other.x + self.zx * other.y,
+            Trivector(self.xy * other.z + self.yz * other.x + self.zx * other.y),
         )
     }
 }
@@ -45,7 +47,7 @@ struct VGA (
     pub f64,
     pub Vector,
     pub Bivector,
-    pub f64
+    pub Trivector
 );
 
 impl Default for VGA {
@@ -54,7 +56,7 @@ impl Default for VGA {
             0.0,
             Vector { ..Default::default() },
             Bivector { ..Default::default() },
-            0.0,
+            Trivector(0.0),
         )
     }
 }
@@ -82,8 +84,8 @@ impl Mul for VGA {
         let (bv, t2) = self.2 * other.1;
         VGA (
             self.0 * other.0 + vdot + bdot + self.3 * other.3,
-            self.0 * other.1 + other.0 * self.1 + vb + bv,
-            self.0 * other.2 + other.0 * self.2 + vwedge + bwedge,
+            self.0 * other.1 + other.0 * self.1 + vb + bv + self.2 * self.3 + self.3 * self.2,
+            self.0 * other.2 + other.0 * self.2 + vwedge + bwedge + self.1 * other.3 + self.3 * other.1,
             t1 + t2,
         )
     }
