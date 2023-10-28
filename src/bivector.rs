@@ -1,20 +1,20 @@
-use std::ops::Add;
-use std::ops::Mul;
+use std::ops::{Add, Mul, Neg};
 
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Bivector {
-    pub i: f64,
-    pub j: f64,
-    pub k: f64,
+    pub yz: f64,
+    pub zx: f64,
+    pub xy: f64,
 }
 
-pub const I: Bivector = Bivector { i: 1.0, j: 0.0, k: 0.0 };
-pub const J: Bivector = Bivector { i: 0.0, j: 1.0, k: 0.0 };
-pub const K: Bivector = Bivector { i: 0.0, j: 0.0, k: 1.0 };
+pub const YZ: Bivector = Bivector { yz: 1.0, zx: 0.0, xy: 0.0 };
+pub const ZX: Bivector = Bivector { yz: 0.0, zx: 1.0, xy: 0.0 };
+pub const XY: Bivector = Bivector { yz: 0.0, zx: 0.0, xy: 1.0 };
+
 
 impl Default for Bivector {
     fn default() -> Self {
-        Self { i: 0.0, j: 0.0, k: 0.0, }
+        Self { yz: 0.0, zx: 0.0, xy: 0.0 }
     }
 }
 
@@ -23,9 +23,9 @@ impl Add for Bivector {
 
     fn add(self, other: Self) -> <Self as Add<Self>>::Output {
         Self {
-            i: self.i + other.i,
-            j: self.j + other.j,
-            k: self.k + other.k,
+            yz: self.yz + other.yz,
+            zx: self.zx + other.zx,
+            xy: self.xy + other.xy,
         }
     }
 }
@@ -34,11 +34,11 @@ impl Mul for Bivector {
     type Output = (f64, Self);
 
     fn mul(self, other: Self) -> Self::Output {
-        (-self.i * other.i - self.j * other.j - self.k * other.k,
+        (-self.xy * other.xy - self.yz * other.yz - self.zx * other.zx,
         Self {
-            i: self.j * other.k - self.k * other.j,
-            j: self.k * other.i - self.i * other.k,
-            k: self.i * other.j - self.j * other.i,
+            yz: self.xy * other.zx - self.zx * other.xy,
+            zx: self.yz * other.xy - self.xy * other.yz,
+            xy: self.zx * other.yz - self.yz * other.zx,
         })
     }
 }
@@ -48,10 +48,18 @@ impl Mul<Bivector> for f64 {
 
     fn mul(self, other: Bivector) -> Self::Output {
         Bivector {
-            i: self * other.i,
-            j: self * other.j,
-            k: self * other.k,
+            yz: self * other.yz,
+            zx: self * other.zx,
+            xy: self * other.xy,
         }
+    }
+}
+
+impl Neg for Bivector {
+    type Output = Self;
+
+    fn neg(self) -> Self::Output {
+        -1.0 * self
     }
 }
 
@@ -61,21 +69,21 @@ mod tests {
 
     #[test]
     fn test_add() {
-        let b1 = Bivector { i: 1.0, j: 1.0, k: 0.0 };
-        let b2 = Bivector { i: 0.0, j: 1.0, k: 3.0 };
-        assert_eq!(b1 + b2, Bivector { i: 1.0, j: 2.0, k: 3.0 });
+        let b1 = Bivector { yz: 1.0, zx: 0.0, xy: 1.0 };
+        let b2 = Bivector { yz: 1.0, zx: 3.0, xy: 0.0 };
+        assert_eq!(b1 + b2, Bivector { yz: 2.0, zx: 3.0, xy: 1.0 });
     }
 
     #[test]
     fn test_scale() {
-        let b = Bivector { i: 0.0, j: 1.0, k: 3.0 };
-        assert_eq!(2.0 * b, Bivector { i: 0.0, j: 2.0, k: 6.0 });
+        let b = Bivector { yz: 1.0, zx: 3.0, xy: 0.0 };
+        assert_eq!(2.0 * b, Bivector { yz: 2.0, zx: 6.0, xy: 0.0 });
     }
 
     #[test]
     fn test_mul() {
-        let (dot, wedge) = I * (I + J);
+        let (dot, wedge) = XY * (XY + YZ);
         assert_eq!(dot, -1.0);
-        assert_eq!(wedge, K);
+        assert_eq!(wedge, -ZX);
     }
 }

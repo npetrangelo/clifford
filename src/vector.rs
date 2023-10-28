@@ -1,5 +1,4 @@
-use std::ops::Add;
-use std::ops::Mul;
+use std::ops::{Add, Mul, Neg};
 
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Vector {
@@ -38,9 +37,9 @@ impl Mul for Vector {
     fn mul(self, other: Vector) -> Self::Output {
         (self.x * other.x + self.y * other.y + self.z * other.z,
         Bivector {
-            i: self.x * other.y - self.y * other.x,
-            j: self.y * other.z - self.z * other.y,
-            k: self.z * other.x - self.x * other.z,
+            yz: self.y * other.z - self.z * other.y,
+            zx: self.z * other.x - self.x * other.z,
+            xy: self.x * other.y - self.y * other.x,
         })
     }
 }
@@ -57,10 +56,18 @@ impl Mul<Vector> for f64 {
     }
 }
 
+impl Neg for Vector {
+    type Output = Self;
+
+    fn neg(self) -> Self::Output {
+        -1.0 * self
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::bivector::{I, J, K};
+    use crate::bivector::{YZ, ZX, XY};
 
     #[test]
     fn test_add() {
@@ -79,6 +86,6 @@ mod tests {
     fn test_mul() {
         let (dot, wedge) = X * (X + Y);
         assert_eq!(dot, 1.0);
-        assert_eq!(wedge, I);
+        assert_eq!(wedge, XY);
     }
 }

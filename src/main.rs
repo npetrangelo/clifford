@@ -16,11 +16,11 @@ impl Mul<Bivector> for Vector {
     fn mul(self, other: Bivector) -> Self::Output {
         (
             Vector {
-                x: self.z * other.k,
-                y: self.x * other.i,
-                z: self.y * other.j,
+                x: self.z * other.zx,
+                y: self.x * other.xy,
+                z: self.y * other.yz,
             },
-            self.x * other.j + self.y * other.k + self.z * other.i,
+            self.x * other.yz + self.y * other.zx + self.z * other.xy,
         )
     }
 }
@@ -31,11 +31,11 @@ impl Mul<Vector> for Bivector {
     fn mul(self, other: Vector) -> Self::Output {
         (
             Vector {
-                x: self.i * other.y,
-                y: self.j * other.z,
-                z: self.k * other.x,
+                x: self.xy * other.y,
+                y: self.yz * other.z,
+                z: self.zx * other.x,
             },
-            self.i * other.z + self.j * other.x + self.k * other.y,
+            self.xy * other.z + self.yz * other.x + self.zx * other.y,
         )
     }
 }
