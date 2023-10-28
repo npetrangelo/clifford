@@ -34,6 +34,14 @@ impl Mul for Trivector {
     }
 }
 
+impl Mul<Trivector> for f64 {
+    type Output = Trivector;
+
+    fn mul(self, xyz: Trivector) -> Self::Output {
+        Trivector(self * xyz.0)
+    }
+}
+
 impl Mul<Trivector> for Vector {
     type Output = Bivector;
 

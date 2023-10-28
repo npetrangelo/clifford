@@ -86,7 +86,7 @@ impl Mul for VGA {
             self.0 * other.0 + vdot + bdot + self.3 * other.3,
             self.0 * other.1 + other.0 * self.1 + vb + bv + self.2 * self.3 + self.3 * self.2,
             self.0 * other.2 + other.0 * self.2 + vwedge + bwedge + self.1 * other.3 + self.3 * other.1,
-            t1 + t2,
+            t1 + t2 + self.0 * other.3 + other.0 * self.3,
         )
     }
 }
