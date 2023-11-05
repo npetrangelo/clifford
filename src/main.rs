@@ -42,24 +42,13 @@ impl Mul<Vector> for Bivector {
     }
 }
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 struct VGA (
     pub f64,
     pub Vector,
     pub Bivector,
     pub Trivector
 );
-
-impl Default for VGA {
-    fn default() -> Self {
-        VGA (
-            0.0,
-            Vector { ..Default::default() },
-            Bivector { ..Default::default() },
-            Trivector(0.0),
-        )
-    }
-}
 
 impl Add for VGA {
     type Output = Self;
