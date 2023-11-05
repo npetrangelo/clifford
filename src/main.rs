@@ -18,9 +18,9 @@ impl Mul<Bivector> for Vector {
     fn mul(self, other: Bivector) -> Self::Output {
         (
             Vector {
-                x: self.z * other.zx,
-                y: self.x * other.xy,
-                z: self.y * other.yz,
+                x: self.z * other.zx - self.x * other.zx,
+                y: self.x * other.xy - self.y * other.xy,
+                z: self.y * other.yz - self.z * other.yz,
             },
             Trivector(self.x * other.yz + self.y * other.zx + self.z * other.xy),
         )
@@ -33,9 +33,9 @@ impl Mul<Vector> for Bivector {
     fn mul(self, other: Vector) -> Self::Output {
         (
             Vector {
-                x: self.xy * other.y,
-                y: self.yz * other.z,
-                z: self.zx * other.x,
+                x: self.xy * other.y - self.xy * other.x,
+                y: self.yz * other.z - self.yz * other.y,
+                z: self.zx * other.x - self.zx * other.z,
             },
             Trivector(self.xy * other.z + self.yz * other.x + self.zx * other.y),
         )
