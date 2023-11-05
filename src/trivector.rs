@@ -2,14 +2,8 @@ use std::ops::{Add, Mul, Neg};
 
 use crate::{bivector::Bivector, vector::Vector};
 
-#[derive(Copy, Clone, Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, Default, PartialEq)]
 pub struct Trivector(pub f64);
-
-impl Default for Trivector {
-    fn default() -> Self {
-        Self(0.0)
-    }
-}
 
 impl Neg for Trivector {
     type Output = Self;

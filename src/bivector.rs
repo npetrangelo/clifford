@@ -1,6 +1,6 @@
 use std::ops::{Add, Mul, Neg};
 
-#[derive(Copy, Clone, Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, Default, PartialEq)]
 pub struct Bivector {
     pub yz: f64,
     pub zx: f64,
@@ -10,12 +10,6 @@ pub struct Bivector {
 pub const YZ: Bivector = Bivector { yz: 1.0, zx: 0.0, xy: 0.0 };
 pub const ZX: Bivector = Bivector { yz: 0.0, zx: 1.0, xy: 0.0 };
 pub const XY: Bivector = Bivector { yz: 0.0, zx: 0.0, xy: 1.0 };
-
-impl Default for Bivector {
-    fn default() -> Self {
-        Self { yz: 0.0, zx: 0.0, xy: 0.0 }
-    }
-}
 
 impl Add for Bivector {
     type Output = Self;
